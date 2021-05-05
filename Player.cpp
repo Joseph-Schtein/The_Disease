@@ -17,18 +17,11 @@ Player::Player(Board& board, const City name): board(board), currentCity(name){
     for(auto& x: tmp) {
         cards.push_back(x.first);
     }
-
-    while(inHand.size() > 7){
-        uint take = (uint)rand() % 47;
-        City tmp = cards.at(take);
-        take_card(tmp);
-    }
 }
 
 
 
 Player& Player::fly_direct(City passTo){
-
     auto index = std::find(this->inHand.begin(), this->inHand.end(), passTo);
     if(index != inHand.end()){
         this->currentCity = passTo;
@@ -37,7 +30,7 @@ Player& Player::fly_direct(City passTo){
     }
 
    else if(std::find(this->cards.begin(), this->cards.end(), passTo) != this->cards.end()){
-        std::cout << "the needed card is not in the player hand" << std::endl;
+        throw std::invalid_argument("the needed card is not in the player hand");
     }
 
     return *this;
@@ -48,13 +41,14 @@ Player& Player::drive(City passTo){
     std::vector<std::string> neighbors = board.getNeighbors(tmp.at(currentCity));
     bool neig = false;
     std::string passToStr = tmp.at(passTo);
-    for(unsigned int i = 0; i < neighbors.size(); i++){
+    for(unsigned int i = 0; i < neighbors.size() && !neig; i++){
         if(neighbors.at(i) == passToStr){
             currentCity = passTo;
+            neig = true;
         }
 
-        else{
-            throw "that city isn't can be reach";
+        else if(i+1 == neighbors.size()){
+            throw std::invalid_argument("that city isn't can be reach");
         }
     }
     return *this;
@@ -89,6 +83,7 @@ Player& Player::fly_shuttle(const City passTo){
 }
 
 Player& Player::build(){
+
     auto index = std::find(this->inHand.begin(), this->inHand.end(), currentCity);
     if(index != inHand.end() && !board.haveFacility(currentCity)){
         board.buildResearchFacility(currentCity);
@@ -130,9 +125,11 @@ Player& Player::discover_cure(Color buildInside){
 }
 
 Player& Player::treat(City treatCity){
-    bool findCure = board.haveCure(board.getCityColor(treatCity));
+
+    Color col = this->board.getCityColor(treatCity);
+    bool findCure = board.haveCure(col);
     uint pandStatus = board[treatCity];
-    if(pandStatus > 0 && treatCity == currentCity){
+    if(pandStatus > 0){
         if(!findCure){
             board[treatCity]--; 
         }
@@ -143,7 +140,7 @@ Player& Player::treat(City treatCity){
     }
 
     else{
-        throw "the disease is died already";
+        throw std::invalid_argument("the disease is died already in: " + board.getMap()[treatCity]);
     }    
 
     return *this;
@@ -153,8 +150,8 @@ Player& Player::take_card(City newCard){
     if(std::find(this->cards.begin(), this->cards.end(), newCard) != this->cards.end()){
         auto index = std::find(this->cards.begin(), this->cards.end(), newCard);
         uint tmp = index - cards.begin();
-        inHand.push_back(cards.at(tmp));
-        cards.erase(cards.begin() + tmp);  
+        City tmpCity = cards.at(tmp);
+        inHand.push_back(tmpCity);
     }
     return *this;
 }

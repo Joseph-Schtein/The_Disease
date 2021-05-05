@@ -6,6 +6,7 @@
 #include <vector>
 #include <unordered_map>
 #include <utility>
+#include <ostream>
 
 #include "City.hpp"
 #include "Color.hpp"
@@ -34,8 +35,6 @@ namespace pandemic{
 
             unsigned int& operator[](City name);
 
-            void operator=(int value);
-
             friend std::ostream& operator<<(std::ostream& os, const Board& board);
 
             bool is_clean();
@@ -51,7 +50,6 @@ namespace pandemic{
             bool haveCure(Color colorType); 
 
             Color getCityColor(City cityName);
-
     };
 }
 

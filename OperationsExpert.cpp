@@ -15,7 +15,7 @@ OperationsExpert& OperationsExpert::build(){
     
 
     else{
-        std::cout << "we build already facility here";
+        throw std::invalid_argument("we build already facility here");
     }
 
 

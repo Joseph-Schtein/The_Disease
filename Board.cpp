@@ -2,6 +2,8 @@
 #include <iterator>
 #include <sstream>
 #include <algorithm>
+#include <ostream>
+#include <string>
 
 #include "Board.hpp"
 #include "City.hpp"
@@ -20,7 +22,7 @@ Board::Board(){
     std::string word;
     std::vector<std::string> neigbors;
     std::ifstream myfile;
-    myfile.open("cities_map.txt");
+    myfile.open("cities_map");
     while (std::getline(myfile, line)){
         bool newLine = true;
         bool insertColor = true;
@@ -33,6 +35,7 @@ Board::Board(){
 
             else if(insertColor){
                 currentCityColor = word;
+                insertColor = false;
             }
 
             else{
@@ -42,24 +45,27 @@ Board::Board(){
         
         cityStatus[cityName] = 0;
         
-        if(currentCityColor == "Black")
-            cityColor[cityName] = Color::Black;
-
-        else if(currentCityColor == "Blue")
-            cityColor[cityName] = Color::Blue;
         
-        else if(currentCityColor == "Yellow")
-            cityColor[cityName] = Color::Yellow;
+        if(currentCityColor == "Black"){
+            cityColor.insert(std::make_pair(cityName, Color::Black));
+        }
 
-        else if(currentCityColor == "Red")
-            cityColor[cityName] = Color::Red;
+        else if(currentCityColor == "Blue"){
+            cityColor.insert(std::make_pair(cityName, Color::Blue));;
+        }
 
-        connection[cityName] = neigbors;
+        else if(currentCityColor == "Yellow"){
+            cityColor.insert(std::make_pair(cityName, Color::Yellow));;
+        }
+
+        else if(currentCityColor == "Red"){
+            cityColor.insert(std::make_pair(cityName, Color::Red));;
+        }
+
+        connection.insert(std::make_pair(cityName, neigbors));
 
         neigbors.clear();
-
     }
-
 }
 
 std::unordered_map<City, std::string>& Board::getMap(){
@@ -71,12 +77,7 @@ unsigned int& Board::operator[](City name) {
     return this->cityStatus.at(this->cityToString.at(name));
 }
 
-void Board::operator=(int value){
-    
-}
-
-std::ostream& operator<<(std::ostream& os, Board& board){
-    
+std::ostream& pandemic::operator<<(std::ostream& os, const Board& board){
     return os;
 }
 
@@ -97,109 +98,117 @@ void Board::buildResearchFacility(City cityName){
 }
 
 Color Board::getCityColor(City cityName){
-    std::string tmp = cityToString.at(cityName);
-    return cityColor.at(tmp);
+    return this->cityColor.at(cityToString.at(cityName));
 }
 
 bool Board::haveCure(Color colorType){
-    return existCure.at(colorType);
+    return this->existCure.at(colorType);
 } 
 
 
 void Board::replaceEnumByString(){
-    cityToString[City::Algiers] = "Algiers";
-    cityToString[City::Atlanta] = "Atlanta";
-    cityToString[City::Bogota] = "Bogota";
-    cityToString[City::BuenosAires] = "BuenosAires";
-    cityToString[City::Baghdad] = "Baghdad";
-    cityToString[City::Beijing] = "Beijing";
-    cityToString[City::Cairo] = "Cairo";
-    cityToString[City::Chennai] = "Chennai";
-    cityToString[City::Chicago] = "Chicago";
-    cityToString[City::Delhi] = "Delhi";
-    cityToString[City::Essen] = "Essen";
-    cityToString[City::HongKong] = "HongKong";
-    cityToString[City::Istanbul] = "Istanbul";
-    cityToString[City::Jakarta] = "Jakarta";
-    cityToString[City::Kinshasa] = "Kinshasa";
-    cityToString[City::Kolkata] = "Kolkata";
-    cityToString[City::Lagos] = "Lagos";
-    cityToString[City::London] = "London";
-    cityToString[City::MexicoCity] = "MexicoCity";
-    cityToString[City::Manila] = "Manila";
-    cityToString[City::Miami] = "Miami";
-    cityToString[City::Montreal] = "Montreal";
-    cityToString[City::Moscow] = "Moscow";
-    cityToString[City::Mumbai] = "Mumbai";
-    cityToString[City::NewYork] = "NewYork";
-    cityToString[City::Osaka] = "Osaka";
-    cityToString[City::Paris] = "Paris";
-    cityToString[City::Riyadh] = "Riyadh";
-    cityToString[City::SanFrancisco] = "SanFrancisco";
-    cityToString[City::Santiago] = "Santiago";
-    cityToString[City::Shanghai] = "Shanghai";
-    cityToString[City::Sydney] = "Sydney";
-    cityToString[City::Taipei] = "Taipei";
-    cityToString[City::Tehran] = "Tehran";
-    cityToString[City::Tokyo] = "Tokyo";
-    cityToString[City::StPetersburg] = "StPetersburg";
-    cityToString[City::HoChiMinhCity] = "HoChiMinhCity";
-    cityToString[City::Johannesburg] = "Johannesburg";
-    cityToString[City::Karachi] = "Karachi";
-    cityToString[City::Khartoum] = "Khartoum";
-    cityToString[City::SaoPaulo] = "SaoPaulo";
-    cityToString[City::Washington] = "Washington";
-    cityToString[City::Madrid] = "Madrid";
-    cityToString[City::Seoul] = "Seoul";
-    cityToString[City::LosAngeles] = "LosAngeles";
-    cityToString[City::Milan] = "Milan";
-    cityToString[City::Lima] = "Lima";
+    cityToString = {{City::Algiers, "Algiers"},
+                    {City::Atlanta, "Atlanta"},
+                    {City::Baghdad, "Baghdad"},
+                    {City::Bangkok, "Bangkok"},
+                    {City::Beijing, "Beijing"},
+                    {City::Bogota, "Bogota"},
+                    {City::BuenosAires, "BuenosAires"},
+                    {City::Cairo, "Cairo"},
+                    {City::Chennai, "Chennai"},
+                    {City::Chicago, "Chicago"},
+                    {City::Delhi, "Delhi"},
+                    {City::Essen, "Essen"},
+                    {City::HoChiMinhCity,"HoChiMinhCity"},
+                    {City::HongKong, "HongKong"},
+                    {City::Istanbul, "Istanbul"},
+                    {City::Jakarta, "Jakarta"},
+                    {City::Johannesburg, "Johannesburg"},
+                    {City::Karachi, "Karachi"},
+                    {City::Khartoum, "Khartoum"},
+                    {City::Kinshasa, "Kinshasa"},
+                    {City::Kolkata, "Kolkata"},
+                    {City::Lagos, "Lagos"},
+                    {City::Lima, "Lima"},
+                    {City::London, "London"},
+                    {City::LosAngeles, "LosAngeles"},
+                    {City::Madrid, "Madrid"},
+                    {City::Manila, "Manila"},
+                    {City::MexicoCity, "MexicoCity"},
+                    {City::Miami, "Miami"},
+                    {City::Milan, "Milan"},
+                    {City::Montreal, "Montreal"},
+                    {City::Moscow, "Moscow"},
+                    {City::Mumbai, "Mumbai"},
+                    {City::NewYork, "NewYork"},
+                    {City::Osaka, "Osaka"},
+                    {City::Paris, "Paris"},
+                    {City::Riyadh, "Riyadh"},
+                    {City::SanFrancisco, "SanFrancisco"},
+                    {City::Santiago, "Santiago"},
+                    {City::SaoPaulo, "SaoPaulo"},
+                    {City::Seoul,"Seoul"},
+                    {City::Shanghai, "Shanghai"},
+                    {City::StPetersburg, "StPetersburg"},
+                    {City::Sydney, "Sydney"},
+                    {City::Taipei, "Taipei"},
+                    {City::Tehran, "Tehran"},
+                    {City::Tokyo, "Tokyo"},
+                    {City::Washington, "Washington"}};
 
-    existReasearchFacility[City::Algiers] = false;
-    existReasearchFacility[City::Atlanta] = false;
-    existReasearchFacility[City::Bogota] = false;
-    existReasearchFacility[City::BuenosAires] = false;
-    existReasearchFacility[City::Baghdad] = false;
-    existReasearchFacility[City::Beijing] = false;
-    existReasearchFacility[City::Cairo] = false;
-    existReasearchFacility[City::Chennai] = false;
-    existReasearchFacility[City::Chicago] = false;
-    existReasearchFacility[City::Delhi] = false;
-    existReasearchFacility[City::Essen] = false;
-    existReasearchFacility[City::HongKong] = false;
-    existReasearchFacility[City::Istanbul] = false;
-    existReasearchFacility[City::Jakarta] = false;
-    existReasearchFacility[City::Kinshasa] = false;
-    existReasearchFacility[City::Kolkata] = false;
-    existReasearchFacility[City::Lagos] = false;
-    existReasearchFacility[City::London] = false;
-    existReasearchFacility[City::MexicoCity] = false;
-    existReasearchFacility[City::Manila] = false;
-    existReasearchFacility[City::Miami] = false;
-    existReasearchFacility[City::Montreal] = false;
-    existReasearchFacility[City::Moscow] = false;
-    existReasearchFacility[City::Mumbai] = false;
-    existReasearchFacility[City::NewYork] = false;
-    existReasearchFacility[City::Osaka] = false;
-    existReasearchFacility[City::Paris] = false;
-    existReasearchFacility[City::Riyadh] = false;
-    existReasearchFacility[City::SanFrancisco] = false;
-    existReasearchFacility[City::Santiago] = false;
-    existReasearchFacility[City::Shanghai] = false;
-    existReasearchFacility[City::Sydney] = false;
-    existReasearchFacility[City::Taipei] = false;
-    existReasearchFacility[City::Tehran] = false;
-    existReasearchFacility[City::Tokyo] = false;
-    existReasearchFacility[City::StPetersburg] = false;
-    existReasearchFacility[City::HoChiMinhCity] = false;
-    existReasearchFacility[City::Johannesburg] = false;
-    existReasearchFacility[City::Karachi] = false;
-    existReasearchFacility[City::Khartoum] = false;
-    existReasearchFacility[City::SaoPaulo] = false;
-    existReasearchFacility[City::Washington] = false;
-    existReasearchFacility[City::Madrid] = false;
-    existReasearchFacility[City::Seoul] = false;
-    existReasearchFacility[City::LosAngeles] = false;
-    existReasearchFacility[City::Milan] = false;
-    existReasearchFacility[City::Lima] = false;    
+
+    existReasearchFacility = {  {City::Algiers, false},
+                                {City::Atlanta, false},
+                                {City::Baghdad, false},
+                                {City::Bangkok, false},
+                                {City::Beijing, false},
+                                {City::Bogota, false},
+                                {City::BuenosAires, false},
+                                {City::Cairo, false},
+                                {City::Chennai, false},
+                                {City::Chicago, false},
+                                {City::Delhi, false},
+                                {City::Essen, false},
+                                {City::HoChiMinhCity,false},
+                                {City::HongKong, false},
+                                {City::Istanbul, false},
+                                {City::Jakarta, false},
+                                {City::Johannesburg, false},
+                                {City::Karachi, false},
+                                {City::Khartoum, false},
+                                {City::Kinshasa, false},
+                                {City::Kolkata, false},
+                                {City::Lagos, false},
+                                {City::Lima, false},
+                                {City::London, false},
+                                {City::LosAngeles, false},
+                                {City::Madrid, false},
+                                {City::Manila, false},
+                                {City::MexicoCity, false},
+                                {City::Miami, false},
+                                {City::Milan, false},
+                                {City::Montreal, false},
+                                {City::Moscow, false},
+                                {City::Mumbai, false},
+                                {City::NewYork, false},
+                                {City::Osaka, false},
+                                {City::Paris, false},
+                                {City::Riyadh, false},
+                                {City::SanFrancisco, false},
+                                {City::Santiago, false},
+                                {City::SaoPaulo, false},
+                                {City::Seoul,false},
+                                {City::Shanghai, false},
+                                {City::StPetersburg, false},
+                                {City::Sydney, false},
+                                {City::Taipei, false},
+                                {City::Tehran, false},
+                                {City::Tokyo, false},
+                                {City::Washington, false}};  
+
+    existCure = {{Color::Black, false},
+                 {Color::Blue, false},
+                 {Color::Yellow, false},
+                 {Color::Red, false}};
+         
 }
