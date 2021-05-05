@@ -14,7 +14,7 @@ namespace pandemic{
 
         GeneSplicer(Board& board, const City currentCity): Player(board, currentCity){}
 
-        Player& discover_cure(const Color buildInside) override;
+        GeneSplicer& discover_cure(Color buildInside) override;
 
         std::string role() override;
     };

@@ -14,7 +14,7 @@ namespace pandemic{
 
         Medic(Board& board, const City currentCity): Player(board, currentCity){}
 
-        Player& treat(const City treatCity) override;
+        Medic& treat(const City treatCity) override;
 
         std::string role() override;
     };

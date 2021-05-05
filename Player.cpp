@@ -109,29 +109,30 @@ Player& Player::build(){
 }
 
 Player& Player::discover_cure(Color buildInside){
-    int counter = 0;
-    for(uint i = 0; i < inHand.size(); i++){
-        if(buildInside == board.getCityColor(inHand.at(i))){
-            counter++;
-        }
-    }
-
-    if(counter >= 5){
-        for(uint i = 0; i < inHand.size() && counter > 0; i++){
+    if(board.haveFacility(currentCity)){
+        int counter = 0;
+        for(uint i = 0; i < inHand.size(); i++){
             if(buildInside == board.getCityColor(inHand.at(i))){
-                inHand.erase(inHand.begin() + i);
-                counter--;
+                counter++;
+            }
+        }
+
+        if(counter >= 5){
+            for(uint i = 0; i < inHand.size() && counter > 0; i++){
+                if(buildInside == board.getCityColor(inHand.at(i))){
+                    inHand.erase(inHand.begin() + i);
+                    counter--;
+                }
             }
         }
     }
-
     return *this;
 }
 
 Player& Player::treat(City treatCity){
     bool findCure = board.haveCure(board.getCityColor(treatCity));
     uint pandStatus = board[treatCity];
-    if(pandStatus > 0){
+    if(pandStatus > 0 && treatCity == currentCity){
         if(!findCure){
             board[treatCity]--; 
         }
